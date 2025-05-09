@@ -23,6 +23,7 @@ public class ChatServer {
                 Socket socket = serverSocket.accept();
                 ClientHandler handler = new ClientHandler(socket, this);
                 clients.add(handler);
+
                 handler.start();
             }
         } catch (IOException e) {
@@ -43,20 +44,21 @@ public class ChatServer {
 
     public static void main(String[] args) {
         try {
-            // Ожидаем, что файл settings.txt лежит в рабочей директории
+            // путь к порту settings.txt
             Path configPath = Path.of("src/main/resources/settings.txt");
-
-            // Загружаем порт из этого файла
             ConfigLoader loader = new ConfigLoader(configPath);
             int port = loader.getPort();
 
             // Запускаем сервер
             new ChatServer(port).start();
+
         } catch (IOException e) {
             System.err.println("Не удалось загрузить конфигурацию: " + e.getMessage());
+
             System.exit(1);
         } catch (NumberFormatException e) {
             System.err.println("Некорректное значение порта: " + e.getMessage());
+
             System.exit(2);
         }
     }

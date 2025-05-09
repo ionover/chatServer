@@ -28,6 +28,7 @@ public class ClientHandler extends Thread {
             username = in.readLine();
             if (username == null || username.trim().isEmpty()) {
                 socket.close();
+
                 return;
             }
             System.out.println(username + " подключился.");

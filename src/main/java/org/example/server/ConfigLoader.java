@@ -19,6 +19,7 @@ public class ConfigLoader {
         if (raw == null || raw.isBlank()) {
             throw new NumberFormatException("Свойство 'port' отсутствует или пустое");
         }
+
         return Integer.parseInt(raw.trim());
     }
 }
