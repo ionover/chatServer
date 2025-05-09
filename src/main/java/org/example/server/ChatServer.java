@@ -1,10 +1,11 @@
 package org.example.server;
 
 import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.net.ServerSocket;
+import java.net.Socket;
 
 public class ChatServer {
     private final int port;
@@ -22,7 +23,6 @@ public class ChatServer {
                 Socket socket = serverSocket.accept();
                 ClientHandler handler = new ClientHandler(socket, this);
                 clients.add(handler);
-
                 handler.start();
             }
         } catch (IOException e) {
@@ -30,7 +30,6 @@ public class ChatServer {
         }
     }
 
-    // Рассылает сообщение всем подключённым
     public void broadcast(String username, String message) {
         ServerLogger.logMessage(username, message);
         for (ClientHandler c : clients) {
@@ -38,14 +37,27 @@ public class ChatServer {
         }
     }
 
-    // Убирает клиента из списка при отключении
     public void removeClient(ClientHandler c) {
         clients.remove(c);
     }
 
     public static void main(String[] args) {
-        int port = ConfigLoader.getPort();
+        try {
+            // Ожидаем, что файл settings.txt лежит в рабочей директории
+            Path configPath = Path.of("src/main/resources/settings.txt");
 
-        new ChatServer(port).start();
+            // Загружаем порт из этого файла
+            ConfigLoader loader = new ConfigLoader(configPath);
+            int port = loader.getPort();
+
+            // Запускаем сервер
+            new ChatServer(port).start();
+        } catch (IOException e) {
+            System.err.println("Не удалось загрузить конфигурацию: " + e.getMessage());
+            System.exit(1);
+        } catch (NumberFormatException e) {
+            System.err.println("Некорректное значение порта: " + e.getMessage());
+            System.exit(2);
+        }
     }
 }

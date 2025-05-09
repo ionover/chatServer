@@ -1,26 +1,24 @@
 package org.example.server;
 
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Properties;
 
 public class ConfigLoader {
-    private static final String CONFIG_FILE = "settings.txt";
-    private static final Properties props = new Properties();
+    private final Properties props = new Properties();
 
-    static {
-        try (FileInputStream in = new FileInputStream(CONFIG_FILE)) {
+    public ConfigLoader(Path configPath) throws IOException {
+        try (var in = Files.newInputStream(configPath)) {
             props.load(in);
-        } catch (IOException e) {
-            System.err.println("Не удалось загрузить настройки из " + CONFIG_FILE);
-            System.out.println(e.getMessage());
-
-            System.exit(1);
         }
     }
 
-    public static int getPort() {
-        return Integer.parseInt(props.getProperty("port").trim());
+    public int getPort() {
+        String raw = props.getProperty("port");
+        if (raw == null || raw.isBlank()) {
+            throw new NumberFormatException("Свойство 'port' отсутствует или пустое");
+        }
+        return Integer.parseInt(raw.trim());
     }
 }
-
