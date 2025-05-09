@@ -13,7 +13,8 @@ public class ConfigLoader {
             props.load(in);
         } catch (IOException e) {
             System.err.println("Не удалось загрузить настройки из " + CONFIG_FILE);
-            e.printStackTrace();
+            System.out.println(e.getMessage());
+
             System.exit(1);
         }
     }

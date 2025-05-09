@@ -22,6 +22,7 @@ public class ChatServer {
                 Socket socket = serverSocket.accept();
                 ClientHandler handler = new ClientHandler(socket, this);
                 clients.add(handler);
+
                 handler.start();
             }
         } catch (IOException e) {
@@ -44,6 +45,7 @@ public class ChatServer {
 
     public static void main(String[] args) {
         int port = ConfigLoader.getPort();
+
         new ChatServer(port).start();
     }
 }

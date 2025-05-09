@@ -5,6 +5,8 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
 public class ClientHandler extends Thread {
+    private final String EXIT_PHRASE = "/exit";
+
     private final Socket socket;
     private final ChatServer server;
     private PrintWriter out;
@@ -35,7 +37,7 @@ public class ClientHandler extends Thread {
 
             String line;
             while ((line = in.readLine()) != null) {
-                if ("/exit".equalsIgnoreCase(line.trim())) {
+                if (EXIT_PHRASE.equalsIgnoreCase(line.trim())) {
                     break;
                 }
                 // Рассылаем всем
@@ -50,6 +52,7 @@ public class ClientHandler extends Thread {
             }
             server.removeClient(this);
             System.out.println(username + " вышел.");
+
             server.broadcast("System", username + " покинул чат");
         }
     }
