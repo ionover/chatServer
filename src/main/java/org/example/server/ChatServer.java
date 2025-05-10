@@ -45,7 +45,7 @@ public class ChatServer {
     public static void main(String[] args) {
         try {
             // путь к порту settings.txt
-            Path configPath = Path.of("src/main/resources/settings.txt");
+            Path configPath = Path.of("src/main/resources/server/settings.txt");
             ConfigLoader loader = new ConfigLoader(configPath);
             int port = loader.getPort();
 

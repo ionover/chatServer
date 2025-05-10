@@ -16,7 +16,7 @@ class ConfigLoaderTest {
 
     @Test
     void whenGoodSettingsProvided_thenPortIsParsed() throws Exception {
-        Path cfg = tmpDir.resolve("settings.txt");
+        Path cfg = tmpDir.resolve("server/settings.txt");
         Files.writeString(cfg, "port=555\n");
 
         ConfigLoader loader = new ConfigLoader(cfg);
@@ -25,7 +25,7 @@ class ConfigLoaderTest {
 
     @Test
     void whenEmptySettingsProvided_thenNumberFormatException() throws Exception {
-        Path cfg = tmpDir.resolve("settings.txt");
+        Path cfg = tmpDir.resolve("server/settings.txt");
         Files.createFile(cfg);
 
         ConfigLoader loader = new ConfigLoader(cfg);
