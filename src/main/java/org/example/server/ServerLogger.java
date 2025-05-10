@@ -11,9 +11,13 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class ServerLogger {
-    private static final String LOG_FILE = "file.log";
+    private static String LOG_FILE = "src/main/resources/file.log";
     private static final DateTimeFormatter FMT =
             DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+    public static void setLogFile(String path) {
+        LOG_FILE = path;
+    }
 
     // Вызывается при старте сервера
     public static void logStartup(int port) {

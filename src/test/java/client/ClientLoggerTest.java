@@ -14,27 +14,29 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ClientLoggerTest {
 
-    private static final Path LOG_PATH = Paths.get("file.log");
+    private static final Path LOG_PATH = Paths.get("src/test/resources/file.log");
     private static final Pattern TIMESTAMPED_MSG =
             Pattern.compile("^\\[\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}] .+$");
 
     @BeforeEach
-    void cleanLogFile() throws Exception {
+    void setup() throws Exception {
+        Files.createDirectories(LOG_PATH.getParent());
         Files.deleteIfExists(LOG_PATH);
+        ClientLogger.setLogFile(LOG_PATH.toString());
     }
 
     @Test
     void logStartup_appendsStartupLine() throws Exception {
         ClientLogger.logStartup("localhost", 12345);
 
-        assertTrue(Files.exists(LOG_PATH), "должен создаться файл лога");
+        assertTrue(Files.exists(LOG_PATH), "Лог-файл должен быть создан");
         List<String> lines = Files.readAllLines(LOG_PATH);
+        assertEquals(1, lines.size(), "Должна быть ровно одна строка после logStartup");
 
-        assertEquals(1, lines.size(), "должна быть ровно одна строка");
         assertEquals(
                 "Client started, connecting to localhost:12345",
                 lines.getFirst(),
-                "строка должна точно соответствовать шаблону логирования старта"
+                "Сообщение о старте должно быть корректным"
         );
     }
 
@@ -44,18 +46,18 @@ class ClientLoggerTest {
         ClientLogger.logMessage("msg2");
 
         List<String> lines = Files.readAllLines(LOG_PATH);
-        assertEquals(2, lines.size(), "должно быть две строки после двух вызовов");
+        assertEquals(2, lines.size(), "Должно быть две записи после двух вызовов logMessage");
 
         assertTrue(
                 TIMESTAMPED_MSG.matcher(lines.get(0)).matches(),
-                "первая строка должна содержать корректный таймстамп и сообщение"
+                "Первая запись должна содержать валидный таймстамп"
         );
+        assertTrue(lines.get(0).endsWith("msg1"), "Первая запись должна заканчиваться на 'msg1'");
+
         assertTrue(
                 TIMESTAMPED_MSG.matcher(lines.get(1)).matches(),
-                "вторая строка должна содержать корректный таймстамп и сообщение"
+                "Вторая запись должна содержать валидный таймстамп"
         );
-
-        assertTrue(lines.get(0).endsWith("msg1"), "первая строка должна заканчиваться на msg1");
-        assertTrue(lines.get(1).endsWith("msg2"), "вторая строка должна заканчиваться на msg2");
+        assertTrue(lines.get(1).endsWith("msg2"), "Вторая запись должна заканчиваться на 'msg2'");
     }
 }
