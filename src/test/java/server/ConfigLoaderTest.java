@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class ConfigLoaderTest {
 
     @TempDir
-    Path tmpDir;  // JUnit автоматически создаст и почистит эту папку
+    Path tmpDir;
 
     @Test
     void whenGoodSettingsProvided_thenPortIsParsed() throws Exception {
